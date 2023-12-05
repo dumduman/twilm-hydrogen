@@ -58,7 +58,7 @@ export function CartDetails({
   const cartHasItems = !!cart && cart.totalQuantity > 0;
   const container = {
     drawer: 'grid grid-cols-1 h-screen-no-nav grid-rows-[1fr_auto]',
-    page: 'w-full pb-12 grid md:grid-cols-2 md:items-start gap-8 md:gap-8 lg:gap-12',
+    page: 'w-full px-12 md:items-start gap-8 md:gap-8 lg:gap-12',
   };
 
   return (
@@ -66,7 +66,7 @@ export function CartDetails({
       <CartLines lines={cart?.lines} layout={layout} />
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
-          <CartDiscounts discountCodes={cart.discountCodes} />
+          {/* <CartDiscounts discountCodes={cart.discountCodes} /> */}
           <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
         </CartSummary>
       )}
@@ -79,58 +79,58 @@ export function CartDetails({
  * @param discountCodes the current discount codes applied to the cart
  * @todo rework when a design is ready
  */
-function CartDiscounts({
-  discountCodes,
-}: {
-  discountCodes: CartType['discountCodes'];
-}) {
-  const codes: string[] =
-    discountCodes
-      ?.filter((discount) => discount.applicable)
-      ?.map(({code}) => code) || [];
+// function CartDiscounts({
+//   discountCodes,
+// }: {
+//   discountCodes: CartType['discountCodes'];
+// }) {
+//   const codes: string[] =
+//     discountCodes
+//       ?.filter((discount) => discount.applicable)
+//       ?.map(({code}) => code) || [];
 
-  return (
-    <>
-      {/* Have existing discount, display it with a remove option */}
-      <dl className={codes && codes.length !== 0 ? 'grid' : 'hidden'}>
-        <div className="flex items-center justify-between font-medium">
-          <Text as="dt">Discount(s)</Text>
-          <div className="flex items-center justify-between">
-            <UpdateDiscountForm>
-              <button>
-                <IconRemove
-                  aria-hidden="true"
-                  style={{height: 18, marginRight: 4}}
-                />
-              </button>
-            </UpdateDiscountForm>
-            <Text as="dd">{codes?.join(', ')}</Text>
-          </div>
-        </div>
-      </dl>
+//   return (
+//     <>
+//       {/* Have existing discount, display it with a remove option */}
+//       <dl className={codes && codes.length !== 0 ? 'grid' : 'hidden'}>
+//         <div className="flex items-center justify-between font-medium">
+//           <Text as="dt">Discount(s)</Text>
+//           <div className="flex items-center justify-between">
+//             <UpdateDiscountForm>
+//               <button>
+//                 <IconRemove
+//                   aria-hidden="true"
+//                   style={{height: 18, marginRight: 4}}
+//                 />
+//               </button>
+//             </UpdateDiscountForm>
+//             <Text as="dd">{codes?.join(', ')}</Text>
+//           </div>
+//         </div>
+//       </dl>
 
-      {/* Show an input to apply a discount */}
-      <UpdateDiscountForm discountCodes={codes}>
-        <div
-          className={clsx(
-            'flex',
-            'items-center gap-4 justify-between text-copy',
-          )}
-        >
-          <input
-            className={getInputStyleClasses()}
-            type="text"
-            name="discountCode"
-            placeholder="Discount code"
-          />
-          <button className="flex justify-end font-medium whitespace-nowrap">
-            Apply Discount
-          </button>
-        </div>
-      </UpdateDiscountForm>
-    </>
-  );
-}
+//       {/* Show an input to apply a discount */}
+//       <UpdateDiscountForm discountCodes={codes}>
+//         <div
+//           className={clsx(
+//             'flex',
+//             'items-center gap-4 justify-between text-copy',
+//           )}
+//         >
+//           <input
+//             className={getInputStyleClasses()}
+//             type="text"
+//             name="discountCode"
+//             placeholder="Discount code"
+//           />
+//           <button className="flex justify-end font-medium whitespace-nowrap">
+//             Apply Discount
+//           </button>
+//         </div>
+//       </UpdateDiscountForm>
+//     </>
+//   );
+// }
 
 function UpdateDiscountForm({
   discountCodes,
@@ -166,7 +166,7 @@ function CartLines({
   const className = clsx([
     y > 0 ? 'border-t' : '',
     layout === 'page'
-      ? 'flex-grow md:translate-y-4'
+      ? 'flex-grow md:translate-y-4 flex flex-col gap-[64px]'
       : 'px-6 pb-6 sm-max:pt-2 overflow-auto transition md:px-12',
   ]);
 
@@ -176,7 +176,16 @@ function CartLines({
       aria-labelledby="cart-contents"
       className={className}
     >
+      <div className="flex justify-between items-center">
+        <h1 className="text-[30px] font-light">Your Cart</h1>
+        <a href="#">Continue Shopping</a>
+      </div>
       <ul className="grid gap-6 md:gap-10">
+        <div className="flex justify-between pb-[18px] border-b">
+          <span className="text-13px font-extralight lg:w-1/3">PRODUCT</span>
+          <span className="text-13px font-extralight">QUANTITY</span>
+          <span className="text-13px font-extralight">TOTAL</span>
+        </div>
         {currentLines.map((line) => (
           <CartLineItem key={line.id} line={line as CartLine} />
         ))}
@@ -190,9 +199,9 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
 
   return (
     <div className="flex flex-col mt-2">
-      <a href={checkoutUrl} target="_self">
-        <Button as="span" width="full">
-          Continue to Checkout
+      <a href={checkoutUrl} target="_self" className="flex justify-end">
+        <Button as="span" className="w-[30%]">
+          Checkout
         </Button>
       </a>
       {/* @todo: <CartShopPayButton cart={cart} /> */}
@@ -210,8 +219,8 @@ function CartSummary({
   layout: Layouts;
 }) {
   const summary = {
-    drawer: 'grid gap-4 p-6 border-t md:px-12',
-    page: 'sticky top-nav grid gap-6 p-4 md:px-6 md:translate-y-4 bg-primary/5 rounded w-full',
+    drawer: 'grid gap-4 p-6 border-t md:px-12 mt-[40px]',
+    page: 'sticky top-nav grid gap-6 md:translate-y-4 rounded w-full pt-6 border-t mt-6',
   };
 
   return (
@@ -219,8 +228,8 @@ function CartSummary({
       <h2 id="summary-heading" className="sr-only">
         Order summary
       </h2>
-      <dl className="grid">
-        <div className="flex items-center justify-between font-medium">
+      <dl className="grid gap-[16px]">
+        <div className="flex items-center justify-end font-light text-[16px] gap-2">
           <Text as="dt">Subtotal</Text>
           <Text as="dd" data-test="subtotal">
             {cost?.subtotalAmount?.amount ? (
@@ -228,6 +237,11 @@ function CartSummary({
             ) : (
               '-'
             )}
+          </Text>
+        </div>
+        <div className="flex w-full justify-end">
+          <Text className="text-right text-[13px] font-light">
+            Taxes and shipping calculated at checkout
           </Text>
         </div>
       </dl>
@@ -263,17 +277,17 @@ function CartLineItem({line}: {line: CartLine}) {
       <div className="flex-shrink">
         {merchandise.image && (
           <Image
-            width={110}
-            height={110}
+            width={100}
+            height={100}
             data={merchandise.image}
-            className="object-cover object-center w-24 h-24 border rounded md:w-28 md:h-28"
+            className="object-cover object-center w-24 h-24 border md:w-28 md:h-28"
             alt={merchandise.title}
           />
         )}
       </div>
 
       <div className="flex justify-between flex-grow">
-        <div className="grid gap-2">
+        <div className="grid gap-2 w-1/3">
           <Heading as="h3" size="copy">
             {merchandise?.product?.handle ? (
               <Link to={`/products/${merchandise.product.handle}`}>
@@ -291,13 +305,13 @@ function CartLineItem({line}: {line: CartLine}) {
               </Text>
             ))}
           </div>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex justify-start text-copy">
-              <CartLineQuantityAdjust line={line} />
-            </div>
-            <ItemRemoveButton lineId={id} />
+        <div className="flex items-center gap-2">
+          <div className="flex justify-start text-copy">
+            <CartLineQuantityAdjust line={line} />
           </div>
+          <ItemRemoveButton lineId={id} />
         </div>
         <Text>
           <CartLinePrice line={line} as="span" />
@@ -317,7 +331,7 @@ function ItemRemoveButton({lineId}: {lineId: CartLine['id']}) {
       }}
     >
       <button
-        className="flex items-center justify-center w-10 h-10 border rounded"
+        className="flex items-center justify-center w-10 h-10"
         type="submit"
       >
         <span className="sr-only">Remove</span>
@@ -345,7 +359,7 @@ function CartLineQuantityAdjust({line}: {line: CartLine}) {
       <label htmlFor={`quantity-${lineId}`} className="sr-only">
         Quantity, {optimisticQuantity}
       </label>
-      <div className="flex items-center border rounded">
+      <div className="flex items-center border">
         <UpdateCartButton lines={[{id: lineId, quantity: prevQuantity}]}>
           <button
             name="decrease-quantity"
