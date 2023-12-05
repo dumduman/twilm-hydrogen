@@ -148,32 +148,64 @@ export default function Product() {
           <div className="sticky md:-mb-nav md:top-nav md:-translate-y-nav md:h-screen md:pt-nav hiddenScroll md:overflow-y-scroll">
             <section className="flex flex-col w-full max-w-xl gap-8 p-6 md:mx-auto md:max-w-sm md:px-0">
               <div className="grid gap-2">
+                {vendor && (
+                  <Text
+                    className={'opacity-50 font-medium text-xs tracking-[3px]'}
+                  >
+                    {vendor}
+                  </Text>
+                )}
                 <Heading as="h1" className="whitespace-normal">
                   {title}
                 </Heading>
-                {vendor && (
-                  <Text className={'opacity-50 font-medium'}>{vendor}</Text>
-                )}
+                {/* TODO CONSUME API DATA */}
+                <p className={'font-medium text-lg'}>
+                  Rp <span className="tracking-[1.3px]">50,000,000.00</span>
+                </p>
+                <span className="text-sm font-medium tracking-[0.7]">
+                  Tax Included
+                </span>
+                {/* TODO CONSUME API DATA  */}
+                {/* <Money
+                  withoutTrailingZeros
+                  data={}
+                  as="span"
+                /> */}
+                {/* {isOnSale && (
+                    <Money
+                      withoutTrailingZeros
+                      data={selectedVariant?.compareAtPrice!}
+                      as="span"
+                      className="opacity-50 strike"
+                    />
+                  )} */}
               </div>
-              <Suspense fallback={<ProductForm variants={[]} />}>
+              <Suspense
+                fallback={<ProductForm desctriptionHTML={''} variants={[]} />}
+              >
                 <Await
                   errorElement="There was a problem loading related products"
                   resolve={variants}
                 >
                   {(resp) => (
                     <ProductForm
+                      desctriptionHTML={descriptionHtml}
                       variants={resp.product?.variants.nodes || []}
                     />
                   )}
                 </Await>
               </Suspense>
-              <div className="grid gap-4 py-4">
-                {descriptionHtml && (
-                  <ProductDetail
-                    title="Product Details"
-                    content={descriptionHtml}
-                  />
-                )}
+              <div className="grid py-4">
+                {/* TODO MATERIAL */}
+                {/* {descriptionHtml && (
+                  <>
+                    <ProductDetail
+                      title="Product Details"
+                      content={descriptionHtml}
+                    />
+                  </>
+                )} */}
+                {/* TODO MATERIAL */}
                 {shippingPolicy?.body && (
                   <ProductDetail
                     title="Shipping"
@@ -209,8 +241,10 @@ export default function Product() {
 
 export function ProductForm({
   variants,
+  desctriptionHTML,
 }: {
   variants: ProductVariantFragmentFragment[];
+  desctriptionHTML: string;
 }) {
   const {product, analytics, storeDomain} = useLoaderData<typeof loader>();
 
@@ -318,8 +352,8 @@ export function ProductForm({
                         prefetch="intent"
                         replace
                         className={clsx(
-                          'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200',
-                          isActive ? 'border-primary/50' : 'border-primary/0',
+                          'flex items-center justify-center leading-none py-2 px-5 border cursor-pointer transition-all duration-200 hover:bg-black hover:text-white',
+                          isActive ? 'bg-black text-white' : '',
                           isAvailable ? 'opacity-100' : 'opacity-50',
                         )}
                       >
@@ -332,6 +366,12 @@ export function ProductForm({
             );
           }}
         </VariantSelector>
+        {/* TODO PRODUCT DESCTIPTION */}
+        <div
+          className="prose dark:prose-invert"
+          dangerouslySetInnerHTML={{__html: desctriptionHTML}}
+        />
+        {/* TODO PRODUCT DESCTIPTION */}
         {selectedVariant && (
           <div className="grid items-stretch gap-4">
             {isOutOfStock ? (
@@ -352,35 +392,25 @@ export function ProductForm({
                   products: [productAnalytics],
                   totalValue: parseFloat(productAnalytics.price),
                 }}
+                className={
+                  'bg-[#C4C4C4] py-[14px] border border-black hover:bg-[#b8b8b8]'
+                }
               >
                 <Text
                   as="span"
                   className="flex items-center justify-center gap-2"
                 >
-                  <span>Add to Cart</span> <span>·</span>{' '}
-                  <Money
-                    withoutTrailingZeros
-                    data={selectedVariant?.price!}
-                    as="span"
-                  />
-                  {isOnSale && (
-                    <Money
-                      withoutTrailingZeros
-                      data={selectedVariant?.compareAtPrice!}
-                      as="span"
-                      className="opacity-50 strike"
-                    />
-                  )}
+                  <span>Add to Cart</span>
                 </Text>
               </AddToCartButton>
             )}
-            {!isOutOfStock && (
+            {/* {!isOutOfStock && (
               <ShopPayButton
                 width="100%"
                 variantIds={[selectedVariant?.id!]}
                 storeDomain={storeDomain}
               />
-            )}
+            )} */}
           </div>
         )}
       </div>
@@ -398,7 +428,11 @@ function ProductDetail({
   learnMore?: string;
 }) {
   return (
-    <Disclosure key={title} as="div" className="grid w-full gap-2">
+    <Disclosure
+      key={title}
+      as="div"
+      className="grid w-full gap-2 border-b border-b-black border-t border-t-black p-4"
+    >
       {({open}) => (
         <>
           <Disclosure.Button className="text-left">
