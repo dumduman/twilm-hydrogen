@@ -197,7 +197,7 @@ export function DesktopHeader({
         <Link to="/" prefetch="intent">
           <Image
             loader={() =>
-              'https://cdn.shopify.com/s/files/1/0608/4748/9282/files/twilm-logo.png?v=1699167417'
+              'https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Primary_Logo_black.png?v=1701653757'
             }
             width="100"
           />
@@ -291,16 +291,13 @@ export function MobileHeader({
         </Form>
       </div>
 
-      <Link
-        className="flex items-center self-stretch leading-[3rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
-        to="/"
-      >
-        <Heading
-          className="font-bold text-center leading-none"
-          as={isHome ? 'h1' : 'h2'}
-        >
-          {title}
-        </Heading>
+      <Link to="/" prefetch="intent">
+        <Image
+          loader={() =>
+            'https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Primary_Logo_black.png?v=1701653757'
+          }
+          width="180"
+        />
       </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
