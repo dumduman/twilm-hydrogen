@@ -234,6 +234,7 @@ function ProductsLoadedOnScroll({
       {nodes.map((product: any, i: number) => (
         <ProductCard
           key={product.id}
+          className="text-center"
           product={product}
           loading={getImageLoadingPriority(i)}
         />

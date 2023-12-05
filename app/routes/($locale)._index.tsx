@@ -1,9 +1,9 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
-import {Await, useLoaderData} from '@remix-run/react';
+import {Await, useLoaderData, useParams} from '@remix-run/react';
 import {AnalyticsPageType} from '@shopify/hydrogen';
 
-import {ProductSwimlane, FeaturedCollections, Hero} from '~/components';
+import {ProductSwimlane, FeaturedCollections, Hero, Button} from '~/components';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
 import {seoPayload} from '~/lib/seo.server';
@@ -14,6 +14,7 @@ export const headers = routeHeaders;
 export async function loader({params, context}: LoaderFunctionArgs) {
   const {language, country} = context.storefront.i18n;
 
+  console.log(language, country);
   if (
     params.locale &&
     params.locale.toLowerCase() !== `${language}-${country}`.toLowerCase()
@@ -24,8 +25,10 @@ export async function loader({params, context}: LoaderFunctionArgs) {
   }
 
   const {shop, hero} = await context.storefront.query(HOMEPAGE_SEO_QUERY, {
-    variables: {handle: 'freestyle'},
+    variables: {handle: 'new-arrivals'},
   });
+  // console.log(shop)
+  // console.log("HERO", hero);
 
   const seo = seoPayload.home();
 
@@ -63,7 +66,7 @@ export async function loader({params, context}: LoaderFunctionArgs) {
     }),
     tertiaryHero: context.storefront.query(COLLECTION_HERO_QUERY, {
       variables: {
-        handle: 'winter-2022',
+        handle: 'sale',
         country,
         language,
       },
@@ -78,11 +81,12 @@ export async function loader({params, context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const {
     primaryHero,
-    secondaryHero,
+    // secondaryHero,
     tertiaryHero,
     featuredCollections,
     featuredProducts,
   } = useLoaderData<typeof loader>();
+  const params = useParams();
 
   // TODO: skeletons vs placeholders
   const skeletons = getHeroPlaceholder([{}, {}, {}]);
@@ -99,18 +103,33 @@ export default function Homepage() {
             {({products}) => {
               if (!products?.nodes) return <></>;
               return (
-                <ProductSwimlane
-                  products={products}
-                  title="Featured Products"
-                  count={4}
-                />
+                <>
+                  <ProductSwimlane
+                    products={products}
+                    title="New Arrivals"
+                    count={8}
+                  />
+                  <div className="flex justify-center">
+                    <Button
+                      to={
+                        params.locale
+                          ? `${params.locale}/products`
+                          : '/products'
+                      }
+                      prefetch="intent"
+                      className="w-64 akzidenz-light bg-transparent border-black border h-12 flex items-center justify-center"
+                    >
+                      VIEW ALL PRODUCTS
+                    </Button>
+                  </div>
+                </>
               );
             }}
           </Await>
         </Suspense>
       )}
 
-      {secondaryHero && (
+      {/* {secondaryHero && (
         <Suspense fallback={<Hero {...skeletons[1]} />}>
           <Await resolve={secondaryHero}>
             {({hero}) => {
@@ -119,7 +138,7 @@ export default function Homepage() {
             }}
           </Await>
         </Suspense>
-      )}
+      )} */}
 
       {featuredCollections && (
         <Suspense>
@@ -130,6 +149,7 @@ export default function Homepage() {
                 <FeaturedCollections
                   collections={collections}
                   title="Collections"
+                  headingClassNames="text-center akzidenz-light text-xl max-w-full"
                 />
               );
             }}
@@ -142,7 +162,7 @@ export default function Homepage() {
           <Await resolve={tertiaryHero}>
             {({hero}) => {
               if (!hero) return <></>;
-              return <Hero {...hero} />;
+              return <Hero {...hero} disableLink={true} />;
             }}
           </Await>
         </Suspense>
@@ -222,8 +242,8 @@ export const FEATURED_COLLECTIONS_QUERY = `#graphql
   query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
     collections(
-      first: 4,
-      sortKey: UPDATED_AT
+      first: 2,
+      query: "Men OR Women"
     ) {
       nodes {
         id

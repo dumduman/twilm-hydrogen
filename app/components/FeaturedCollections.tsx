@@ -6,6 +6,7 @@ import {Heading, Section, Grid, Link} from '~/components';
 type FeaturedCollectionsProps = HomepageFeaturedCollectionsQuery & {
   title?: string;
   [key: string]: any;
+  headingClassNames?: string;
 };
 
 export function FeaturedCollections({
@@ -35,7 +36,12 @@ export function FeaturedCollections({
                     />
                   )}
                 </div>
-                <Heading size="copy">{collection.title}</Heading>
+                <Heading
+                  className="max-w-full text-center text-lg akzidenz-light"
+                  size="copy"
+                >
+                  {collection.title}
+                </Heading>
               </div>
             </Link>
           );

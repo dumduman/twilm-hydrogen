@@ -28,7 +28,7 @@ export async function loader({context, params}: LoaderFunctionArgs) {
   }
 
   // TODO: Query for this?
-  return json({shopName: 'Hydrogen'});
+  return json({shopName: 'Twilm Collection'});
 }
 
 type ActionData = {
@@ -179,7 +179,7 @@ export default function Login() {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
+              className="bg-primary text-contrast py-2 px-4 focus:shadow-outline block w-full"
               type="submit"
               disabled={!!(nativePasswordError || nativeEmailError)}
             >

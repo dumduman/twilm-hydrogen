@@ -5,6 +5,7 @@ import type {
   Media,
   Video as MediaVideo,
 } from '@shopify/hydrogen/storefront-api-types';
+import React from 'react';
 
 import type {CollectionContentFragment} from 'storefrontapi.generated';
 import {Heading, Text, Link} from '~/components';
@@ -13,6 +14,7 @@ type HeroProps = CollectionContentFragment & {
   height?: 'full';
   top?: boolean;
   loading?: HTMLImageElement['loading'];
+  disableLink?: boolean;
 };
 
 /**
@@ -28,9 +30,12 @@ export function Hero({
   spread,
   spreadSecondary,
   top,
+  disableLink,
 }: HeroProps) {
+  const ComponentLink = disableLink ? React.Fragment : Link;
+  const linkProps = disableLink ? {} : ({to: `/collections/${handle}`} as any);
   return (
-    <Link to={`/collections/${handle}`}>
+    <ComponentLink {...linkProps}>
       <section
         className={clsx(
           'relative justify-end flex flex-col w-full',
@@ -54,7 +59,7 @@ export function Hero({
               />
             </div>
           )}
-          {spreadSecondary?.reference && (
+          {/* {spreadSecondary?.reference && (
             <div className="hidden md:block">
               <SpreadMedia
                 sizes="50vw"
@@ -62,7 +67,7 @@ export function Hero({
                 loading={loading}
               />
             </div>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col items-baseline justify-between gap-4 px-6 py-8 sm:px-8 md:px-12 bg-gradient-to-t dark:from-contrast/60 dark:text-primary from-primary/60 text-contrast">
           {heading?.value && (
@@ -78,7 +83,7 @@ export function Hero({
           {cta?.value && <Text size="lead">{cta.value}</Text>}
         </div>
       </section>
-    </Link>
+    </ComponentLink>
   );
 }
 

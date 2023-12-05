@@ -53,6 +53,7 @@ export function ProductCard({
     quantity: 1,
   };
 
+  const isIDRCurrency: boolean = price.currencyCode === 'IDR';
   return (
     <div className="flex flex-col gap-2">
       <Link
@@ -87,9 +88,17 @@ export function ProductCard({
             >
               {product.title}
             </Text>
-            <div className="flex gap-4">
-              <Text className="flex gap-4">
-                <Money withoutTrailingZeros data={price!} />
+            <div className="flex gap-4 justify-center">
+              <Text className="flex text-center" as="div">
+                {isIDRCurrency ? (
+                  <Text className="akzidenz-light">Rp&nbsp;</Text>
+                ) : null}
+                <Money
+                  withoutTrailingZeros
+                  data={price!}
+                  withoutCurrency={isIDRCurrency}
+                  className="text-center akzidenz-light"
+                />
                 {isDiscounted(price as MoneyV2, compareAtPrice as MoneyV2) && (
                   <CompareAtPrice
                     className={'opacity-50'}
