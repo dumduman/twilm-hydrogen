@@ -96,8 +96,9 @@ export function Drawer({
 /* Use for associating arialabelledby with the title*/
 Drawer.Title = Dialog.Title;
 
-export function useDrawer(openDefault = false) {
-  const [isOpen, setIsOpen] = useState(openDefault);
+export function useDrawer(withFullDrawer = false) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [fullOpen, setFullDrawer] = useState(false);
 
   function openDrawer() {
     setIsOpen(true);
@@ -107,9 +108,14 @@ export function useDrawer(openDefault = false) {
     setIsOpen(false);
   }
 
+  function toggleFullDrawer() {
+    setFullDrawer(!fullOpen);
+  }
+
   return {
     isOpen,
     openDrawer,
     closeDrawer,
+    ...(withFullDrawer ? {fullOpen, toggleFullDrawer} : {}),
   };
 }

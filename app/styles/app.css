@@ -42,14 +42,14 @@
   }
 }
 
-@keyframes fadeInAnimation {
+/* @keyframes fadeInAnimation {
   0% {
     opacity: 0;
   }
   100% {
     opacity: 1;
   }
-}
+} */
 
 shop-pay-button {
   width: 100%;
@@ -132,7 +132,15 @@ shop-pay-button {
   }
 
   .swimlane {
-    @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll px-6 pb-4;
+    @media (max-width: 768px) {
+      @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll px-6 pb-4;
+    }
+    @media (min-width: 769px) {
+      @apply grid grid-cols-3 gap-2 pb-4;
+    }
+    @media (min-width: 1025px) {
+      @apply grid grid-cols-4 gap-2 pb-4;
+    }
   }
 }
 
@@ -170,13 +178,60 @@ shop-pay-button {
   }
 
   .card-image {
-    @apply relative flex items-center justify-center overflow-clip rounded;
+    @apply relative flex items-center justify-center overflow-clip;
     &::before {
       content: ' ';
-      @apply absolute top-0 left-0 z-10 block h-full w-full rounded shadow-border;
+      @apply absolute top-0 left-0 z-10 block h-full w-full shadow-border;
     }
     img {
       @apply aspect-[inherit] w-full object-cover;
     }
   }
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url("https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Akzidenz_Grotesk_Regular.woff?v=1698953707") format("woff");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url("https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Akzidenz_Grotesk_Bold.woff?v=1698953832") format("woff");
+  font-style: 700;
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url("https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Akzidenz_Grotesk_Medium.woff?v=1698952483") format("woff");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url("https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Akzidenz_Grotesk_Italic.woff?v=1698952483") format("woff");
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Akzidenz-Grotesk';
+  src: url("https://cdn.shopify.com/s/files/1/0608/4748/9282/files/Akzidenz_Grotesk_Light.woff?v=1698952483") format("woff");
+  font-weight: 300;
+}
+
+.akzidenz-bold {
+  font-family: 'Akzidenz-Grotesk';
+  font-weight: 700;
+}
+.akzidenz-regular {
+  font-family: 'Akzidenz-Grotesk';
+  font-weight: 400;
+}
+.akzidenz-light {
+  font-family: 'Akzidenz-Grotesk';
+  font-weight: 300;
+}
+
+body {
+  font-family: 'Akzidenz-Grotesk', 'IBMPlexSerif', 'Helvetica', 'Sans-Serif';
 }

@@ -42,7 +42,7 @@ export function ProductGallery({
               <Image
                 loading={i === 0 ? 'eager' : 'lazy'}
                 data={image}
-                aspectRatio={!isFirst && !isFourth ? '4/5' : undefined}
+                aspectRatio={!isFirst && !isFourth ? '4/5' : '2/3'}
                 sizes={
                   isFirst || isFourth
                     ? '(min-width: 48em) 60vw, 90vw'

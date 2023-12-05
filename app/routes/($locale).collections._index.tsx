@@ -16,12 +16,14 @@ export const loader = async ({
   request,
   context: {storefront},
 }: LoaderFunctionArgs) => {
+  const filters = ['new-arrivals', 'men', 'women'];
   const variables = getPaginationVariables(request, {pageBy: PAGINATION_SIZE});
   const {collections} = await storefront.query(COLLECTIONS_QUERY, {
     variables: {
       ...variables,
       country: storefront.i18n.country,
       language: storefront.i18n.language,
+      query: filters.join(' OR '),
     },
   });
 
@@ -107,8 +109,9 @@ const COLLECTIONS_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $query: String
   ) @inContext(country: $country, language: $language) {
-    collections(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    collections(first: $first, last: $last, before: $startCursor, after: $endCursor, query: $query) {
       nodes {
         id
         title

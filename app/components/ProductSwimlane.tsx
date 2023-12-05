@@ -8,6 +8,7 @@ const mockProducts = {
 type ProductSwimlaneProps = HomepageFeaturedProductsQuery & {
   title?: string;
   count?: number;
+  paramsLocale?: string;
 };
 
 export function ProductSwimlane({
@@ -17,15 +18,22 @@ export function ProductSwimlane({
   ...props
 }: ProductSwimlaneProps) {
   return (
-    <Section heading={title} padding="y" {...props}>
-      <div className="swimlane hiddenScroll md:pb-8 md:scroll-px-8 lg:scroll-px-12 md:px-8 lg:px-12">
-        {products.nodes.map((product) => (
-          <ProductCard
-            product={product}
-            key={product.id}
-            className="snap-start w-80"
-          />
-        ))}
+    <Section
+      heading={title}
+      padding="y"
+      {...props}
+      headingClassNames="max-w-full akzidenz-light text-center text-xl"
+    >
+      <div className="swimlane hiddenScroll md:pb-8 md:scroll-px-8 md:px-8 lg:px-12">
+        {products.nodes.map((product, index) =>
+          index < count ? (
+            <ProductCard
+              product={product}
+              key={product.id}
+              className="snap-start w-80 lg:w-72 text-center"
+            />
+          ) : null,
+        )}
       </div>
     </Section>
   );
