@@ -243,7 +243,7 @@ export const FEATURED_COLLECTIONS_QUERY = `#graphql
   @inContext(country: $country, language: $language) {
     collections(
       first: 2,
-      query: "Men OR Women"
+      query: "windrush OR london-mods"
     ) {
       nodes {
         id
