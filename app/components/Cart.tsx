@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import {useRef} from 'react';
+import {Suspense, useRef} from 'react';
 import {useScroll} from 'react-use';
 import {
   flattenConnection,
@@ -23,8 +23,12 @@ import {
   Text,
   Link,
   FeaturedProducts,
+  Skeleton,
+  ProductSwimlane,
 } from '~/components';
 import {getInputStyleClasses} from '~/lib/utils';
+import {ProductForm, loader} from '~/routes/($locale).products.$productHandle';
+import {Await, useLoaderData} from '@remix-run/react';
 
 type Layouts = 'page' | 'drawer';
 
@@ -58,18 +62,33 @@ export function CartDetails({
   const cartHasItems = !!cart && cart.totalQuantity > 0;
   const container = {
     drawer: 'grid grid-cols-1 h-screen-no-nav grid-rows-[1fr_auto]',
-    page: 'w-full px-12 md:items-start gap-8 md:gap-8 lg:gap-12',
+    page: 'w-full md:px-12 md:items-start gap-8 md:gap-8 lg:gap-12',
   };
+  const {product, shop, recommended, variants} = useLoaderData<typeof loader>();
 
   return (
     <div className={container[layout]}>
       <CartLines lines={cart?.lines} layout={layout} />
       {cartHasItems && (
         <CartSummary cost={cart.cost} layout={layout}>
-          {/* <CartDiscounts discountCodes={cart.discountCodes} /> */}
           <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
         </CartSummary>
       )}
+      <Suspense fallback={<Skeleton className="h-32" />}>
+        <Await
+          errorElement="There was a problem loading related products"
+          resolve={recommended}
+        >
+          {(products) => (
+            <>
+              <h1 className="pt-[64px] md:px-8 px-4 text-[16px] lg:text-[30px] font-light">
+                You may also like
+              </h1>
+              <ProductSwimlane title="" count={8} products={products} />
+            </>
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 }
@@ -177,13 +196,20 @@ function CartLines({
       className={className}
     >
       <div className="flex justify-between items-center">
-        <h1 className="text-[30px] font-light">Your Cart</h1>
-        <a href="#">Continue Shopping</a>
+        <h1 className="md:text-[30px] text-[24px] font-light">Your Cart</h1>
+        <a
+          href="/products"
+          className="underline underline-offset-1 font-thin text-[16px]"
+        >
+          Continue Shopping
+        </a>
       </div>
       <ul className="grid gap-6 md:gap-10">
         <div className="flex justify-between pb-[18px] border-b">
           <span className="text-13px font-extralight lg:w-1/3">PRODUCT</span>
-          <span className="text-13px font-extralight">QUANTITY</span>
+          <span className="text-13px font-extralight sm:block hidden">
+            QUANTITY
+          </span>
           <span className="text-13px font-extralight">TOTAL</span>
         </div>
         {currentLines.map((line) => (
@@ -220,7 +246,7 @@ function CartSummary({
 }) {
   const summary = {
     drawer: 'grid gap-4 p-6 border-t md:px-12 mt-[40px]',
-    page: 'sticky top-nav grid gap-6 md:translate-y-4 rounded w-full pt-6 border-t mt-6',
+    page: 'top-nav grid gap-6 md:translate-y-4 rounded w-full pt-6 border-t mt-6',
   };
 
   return (
@@ -287,7 +313,7 @@ function CartLineItem({line}: {line: CartLine}) {
       </div>
 
       <div className="flex justify-between flex-grow">
-        <div className="grid gap-2 w-1/3">
+        <div className="grid gap-2 md:w-1/3">
           <Heading as="h3" size="copy">
             {merchandise?.product?.handle ? (
               <Link to={`/products/${merchandise.product.handle}`}>
@@ -305,9 +331,15 @@ function CartLineItem({line}: {line: CartLine}) {
               </Text>
             ))}
           </div>
+          <div className="sm:hidden items-center gap-2 flex">
+            <div className="flex justify-start text-copy">
+              <CartLineQuantityAdjust line={line} />
+            </div>
+            <ItemRemoveButton lineId={id} />
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="md:flex items-center gap-2 hidden ">
           <div className="flex justify-start text-copy">
             <CartLineQuantityAdjust line={line} />
           </div>
